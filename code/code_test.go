@@ -9,7 +9,7 @@ func TestMake(t *testing.T) {
 		operands []int
 		expected []byte
 	}{
-		{Opconstast, []int{65534}, []byte{byte(Opconstast), 255, 253}},
+		{Opconstast, []int{65534}, []byte{byte(Opconstast), 255, 254}},
 	}
 
 	for _, tt := range tests {
