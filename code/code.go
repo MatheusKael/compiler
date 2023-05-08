@@ -5,12 +5,12 @@ import (
 	"fmt"
 )
 
-type instructions []byte
+type Instructions []byte
 
 type Opcode byte
 
 const (
-	Opconstast Opcode = iota
+	OpConstast Opcode = iota
 )
 
 type Definition struct {
@@ -20,7 +20,7 @@ type Definition struct {
 }
 
 var definitions = map[Opcode]*Definition{
-	Opconstast: {"Opconstast", []int{2}},
+	OpConstast: {"Opconstast", []int{2}},
 }
 
 func lookup(op byte) (*Definition, error) {
