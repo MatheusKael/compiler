@@ -5,6 +5,7 @@ import (
 	"monkey/ast"
 	"monkey/code"
 	"monkey/lexer"
+	"monkey/object"
 	"monkey/parser"
 	"testing"
 )
@@ -13,6 +14,43 @@ type compileTestCase struct {
 	input                string
 	expectedConstants    []interface{}
 	expectedInstructions []code.Instructions
+}
+
+func testConstants(
+	t *testing.T,
+	expected []interface{},
+	actual []object.Object,
+) error {
+	if len(expected) != len(actual) {
+		return fmt.Errorf("wrong number of constants. got=%d, want=%d", len(actual), len(expected))
+	}
+
+	for i, constant := range expected {
+		switch constant := constant.(type) {
+		case int:
+			err := testIntegerObject(int64(constant), actual[i])
+
+			if err != nil {
+				return fmt.Errorf("constant %d - testIntegerObject failed: %d", i, err)
+			}
+		}
+	}
+
+	return nil
+}
+
+func testIntegerObject(expected int64, actual object.Object) error {
+	result, ok := actual.(*object.Integer)
+
+	if !ok {
+		return fmt.Errorf("Object is not integer. got=%T(%+v)", actual, actual)
+	}
+
+	if result.Value != expected {
+		return fmt.Errorf("object has wrong value.got=%d, want=%d", result.Value, expected)
+	}
+
+	return nil
 }
 
 func testInstructions(
@@ -52,7 +90,7 @@ func parse(input string) *ast.Program {
 	return p.ParseProgram()
 }
 
-func testIntegerArithmetic(t *testing.T) {
+func TestIntegerArithmetic(t *testing.T) {
 
 	tests := []compileTestCase{
 		{
@@ -77,7 +115,7 @@ func runCompilerTests(t *testing.T, tests []compileTestCase) {
 		err := compiler.Compile(program)
 
 		if err != nil {
-			t.Fatal("Compiler error: %s", err)
+			t.Fatalf("Compiler error: %s", err)
 		}
 		bytecode := compiler.Bytecode()
 
@@ -87,7 +125,7 @@ func runCompilerTests(t *testing.T, tests []compileTestCase) {
 			t.Fatalf("testInstructions failed: %s", err)
 		}
 
-		err = testConstants(tt.expectedConstants, bytecode.Constants)
+		err = testConstants(t, tt.expectedConstants, bytecode.Constants)
 
 		if err != nil {
 			t.Fatalf("testConstants failed: %s", err)
