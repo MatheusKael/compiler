@@ -23,7 +23,33 @@ var definitions = map[Opcode]*Definition{
 	OpConstast: {"Opconstast", []int{2}},
 }
 
-func lookup(op byte) (*Definition, error) {
+func (ins Instructions) String() string {
+	return ""
+}
+
+func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
+	operands := make([]int, len(def.OperandWidths))
+
+	offset := 0
+
+	for i, width := range def.OperandWidths {
+		switch width {
+		case 2:
+			operands[i] = int(ReadUint16(ins[offset:]))
+		}
+
+		offset += width
+	}
+
+	return operands, offset
+
+}
+
+func ReadUint16(ins Instructions) uint16 {
+	return binary.BigEndian.Uint16(ins)
+}
+
+func Lookup(op byte) (*Definition, error) {
 
 	def, ok := definitions[Opcode(op)]
 
