@@ -43,7 +43,10 @@ func TestInstructionsStrings(t *testing.T) {
 		Make(OpConstast, 65535),
 	}
 
-	expected := `0000 OpConstant 1 0003 OpConstant 2 0006 OpConstant 65535`
+	expected := `0000 OpConstant 1
+0003 OpConstant 2
+0006 OpConstant 65535
+`
 	concatted := Instructions{}
 	for _, ins := range instructions {
 		concatted = append(concatted, ins...)
