@@ -99,6 +99,7 @@ func TestIntegerArithmetic(t *testing.T) {
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstast, 0),
 				code.Make(code.OpConstast, 1),
+				code.Make(code.OpAdd),
 			},
 		},
 	}
