@@ -51,6 +51,12 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 
 		switch node.Operator {
+		case "/":
+			c.emit(code.OpDiv)
+		case "*":
+			c.emit(code.OpMult)
+		case "-":
+			c.emit(code.OpSub)
 		case "+":
 			c.emit(code.OpAdd)
 		default:
