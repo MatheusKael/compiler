@@ -36,7 +36,7 @@ func runVmTests(t *testing.T, tests []vmTestCase) {
 			t.Fatalf("vm error: %s", err)
 		}
 
-		slackElem := vm.StackTop()
+		slackElem := vm.LastPoppedStackElem()
 
 		testExpectedObject(t, tt.expected, slackElem)
 	}
