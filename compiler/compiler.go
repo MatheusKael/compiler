@@ -21,6 +21,13 @@ func New() *Compiler {
 
 func (c *Compiler) Compile(node ast.Node) error {
 	switch node := node.(type) {
+	case *ast.Boolean:
+
+		if node.Value {
+			c.emit(code.OpTrue)
+		} else {
+			c.emit(code.OpFalse)
+		}
 	case *ast.Program:
 		for _, s := range node.Statements {
 			err := c.Compile(s)
