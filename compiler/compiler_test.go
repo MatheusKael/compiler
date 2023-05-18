@@ -131,13 +131,23 @@ func TestIntegerArithmetic(t *testing.T) {
 				code.Make(code.OpMult),
 				code.Make(code.OpPop),
 			},
-		}, {
+		},
+		{
 			input:             "2 / 1",
 			expectedConstants: []interface{}{2, 1},
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstast, 0),
 				code.Make(code.OpConstast, 1),
 				code.Make(code.OpDiv),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:             "-1",
+			expectedConstants: []interface{}{1},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpConstast, 0),
+				code.Make(code.OpMinus),
 				code.Make(code.OpPop),
 			},
 		},
@@ -220,6 +230,15 @@ func TestBooleanExpressions(t *testing.T) {
 				code.Make(code.OpTrue),
 				code.Make(code.OpFalse),
 				code.Make(code.OpNotEqual),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:             "!true",
+			expectedConstants: []interface{}{},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpTrue),
+				code.Make(code.OpBang),
 				code.Make(code.OpPop),
 			},
 		},
