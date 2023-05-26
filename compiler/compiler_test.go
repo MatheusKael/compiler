@@ -16,6 +16,34 @@ type compileTestCase struct {
 	expectedInstructions []code.Instructions
 }
 
+func TestConditionals(t *testing.T) {
+	tests := []compileTestCase{
+		{
+			input: `
+			
+			if(true){10};3333;
+
+			`,
+			expectedConstants: []interface{}{10, 3333},
+			expectedInstructions: []code.Instructions{
+
+				code.Make(code.OpTrue),
+
+				code.Make(code.OpJumpNotTruthy, 7),
+
+				code.Make(code.OpConstast, 0),
+
+				code.Make(code.OpPop),
+
+				code.Make(code.OpConstast, 1),
+
+				code.Make(code.OpPop),
+			},
+		},
+	}
+	runCompilerTests(t, tests)
+}
+
 func testConstants(
 	t *testing.T,
 	expected []interface{},
