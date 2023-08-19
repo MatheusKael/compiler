@@ -29,7 +29,9 @@ func New() *Compiler {
 }
 
 func (c *Compiler) Compile(node ast.Node) error {
+
 	switch node := node.(type) {
+
 	case *ast.BlockStatement:
 
 		for _, s := range node.Statements {
@@ -46,6 +48,8 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 
 		// Emit an 'OpJumpNotTruthy' with a bogus Value
+		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999)
+
 		c.emit(code.OpJumpNotTruthy, 9999)
 
 		err = c.Compile(node.Consequence)
@@ -56,6 +60,9 @@ func (c *Compiler) Compile(node ast.Node) error {
 		if c.lastInstructionIsPop() {
 			c.removeLastPop()
 		}
+		afterConsequencePos := len(c.instructions)
+
+		c.changeOperand(jumpNotTruthyPos, afterConsequencePos)
 	case *ast.Boolean:
 
 		if node.Value {
@@ -186,6 +193,20 @@ func (c *Compiler) Bytecode() *Bytecode {
 		Instructions: c.instructions,
 		Constants:    c.constants,
 	}
+}
+
+func (c *Compiler) replaceInstruction(pos int, newInstruction []byte) {
+	for i := 0; i < len(newInstruction); i++ {
+		c.instructions[pos+i] = newInstruction[i]
+	}
+}
+
+func (c *Compiler) changeOperand(opPos int, operand int) {
+	op := code.Opcode(c.instructions[opPos])
+
+	newInstruction := code.Make(op, operand)
+
+	c.replaceInstruction(opPos, newInstruction)
 }
 
 func (c *Compiler) lastInstructionIsPop() bool {
